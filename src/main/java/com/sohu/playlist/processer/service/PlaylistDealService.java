@@ -58,6 +58,31 @@ public class PlaylistDealService {
     }
 
 
+    public void deal56PlayListBykeyWord(String filePath) {
+        List<String> keywordList = getKeyWordListFromDisk(filePath);
+        for (String keyword : keywordList) {
+            logger.info("a keyword start {}", keyword);
+            QueryParam param = formParamFor56(keyword);
+            SearchResult<AuditContent> searchResult = playlistInfoSearchService.search(param, false, "5m");
+            handelSearchResultFor56(searchResult);
+            Long page = searchResult.getTotal() / 200;
+            for (int m = 0; m < page; m++) {
+                param.setFrom(m * 200);
+                param.setSize(200);
+                searchResult = playlistInfoSearchService.search(param, false, "5m");
+                handelSearchResultFor56(searchResult);
+            }
+        }
+    }
+
+    public void handelSearchResultFor56(SearchResult<AuditContent> searchResult) {
+        for (AuditContent auditContent : searchResult.getResults()) {
+            logger.info(auditContent.getPrimaryValue());
+        }
+
+    }
+
+
     private List<String> getKeyWordListFromDisk(String filePath) {
         List<String> keywordList = new ArrayList<>();
         File file = new File(filePath);
@@ -144,6 +169,22 @@ public class PlaylistDealService {
             }
 
         }
+    }
+
+
+    private QueryParam formParamFor56(String keyword) {
+        QueryParam param = new QueryParam();
+        //56专辑
+        param.setType("text-56-playlist");
+        param.setOrderBy("time");
+        param.setKeyword(keyword);
+        //默认精确查询
+        param.setPrecise(true);
+        //查询已通过的
+        param.setIsAudited(1);
+        param.setFrom(0);
+        param.setSize(200);
+        return param;
     }
 
 }

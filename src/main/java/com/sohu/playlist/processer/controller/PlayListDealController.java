@@ -21,6 +21,12 @@ public class PlayListDealController {
         return true;
     }
 
+    @GetMapping("/deal56")
+    public boolean deal56(String filePath){
+        playlistDealService.deal56PlayListBykeyWord(filePath);
+        return true;
+    }
+
     @Resource
     private PlaylistDealService playlistDealService;
 }

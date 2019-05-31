@@ -1,2 +1,5 @@
 server:
   port: 5555
+logging:
+  file: 56ids.txt
+  path: D:/
